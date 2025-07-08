@@ -1,429 +1,375 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Código para el Alma</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <title>Código para el Alma</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    <!-- Configuración Firebase -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyB_hXvBredS5kCItmmcL2N4_eoHABI9pag",
-        authDomain: "codigo-para-el-alma-9344f.firebaseapp.com",
-        databaseURL:
-          "https://codigo-para-el-alma-9344f-default-rtdb.firebaseio.com",
-        projectId: "codigo-para-el-alma-9344f",
-        storageBucket: "codigo-para-el-alma-9344f.firebasestorage.app",
-        messagingSenderId: "1032637584125",
-        appId: "1:1032637584125:web:b99bdaa83d7070d5596494",
-        measurementId: "G-B4M2J1EXQF",
-      };
-      firebase.initializeApp(firebaseConfig);
-    </script>
+  <!-- Configuración Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_hXvBredS5kCItmmcL2N4_eoHABI9pag",  // Reemplaza con tu apiKey
+      authDomain: "codigo-para-el-alma-9344f.firebaseapp.com",
+      databaseURL: "https://codigo-para-el-alma-9344f-default-rtdb.firebaseio.com",
+      projectId: "codigo-para-el-alma-9344f",
+      storageBucket: "codigo-para-el-alma-9344f.appspot.com",
+      messagingSenderId: "1032637584125",
+      appId: "1:1032637584125:web:b99bdaa83d7070d5596494",
+      measurementId: "G-B4M2J1EXQF"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
-    <!-- Estilos visuales -->
-    <style>
-      body {
-        background-color: #1e1e2e;
-        color: #f8f8f2;
-        font-family: "Merriweather", serif;
-        margin: 0;
-        padding: 2rem;
-        text-align: center;
-      }
+  <!-- Estilos visuales -->
+  <style>
+    body {
+      background-color: #1e1e2e;
+      color: #f8f8f2;
+      font-family: 'Merriweather', serif;
+      text-align: center;
+      padding: 2rem;
+      margin: 0;
+    }
+    .bloque {
+      background-color: #2a2a3c;
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 0 15px rgba(255, 182, 193, 0.2);
+    }
+    input, textarea, button {
+      width: 90%;
+      max-width: 500px;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    input, textarea {
+      background-color: #34344a;
+      color: #f8f8f2;
+    }
+    button {
+      background-color: #ff79c6;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff92da;
+    }
+    .oculto {
+      display: none;
+    }
+    .animacion-suave {
+      animation: aparecer 1s ease-out;
+    }
+    @keyframes aparecer {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <div id="bienvenida" class="bloque">
+    <h1>🌌 Bienvenido al Umbral del Alma</h1>
+    <p>Solo quienes conozcan su nombre secreto podrán acceder a los misterios ocultos.</p>
+    <button onclick="mostrarRegistro()">🕯️ Despertar un alma nueva</button>
+    <button onclick="mostrarLogin()">🔑 Entrar al misterio</button><br><br>
+    <button onclick="entrarComoVisitante()">👁️ Explorar sin entrar</button>
+  </div>
 
-      .bloque {
-        background-color: #2a2a3c;
-        margin: 2rem auto;
-        padding: 2rem;
-        border-radius: 12px;
-        max-width: 700px;
-        box-shadow: 0 0 15px rgba(255, 182, 193, 0.2);
-      }
+  <!-- Registro -->
+  <div id="formularioRegistro" class="bloque oculto">
+    <h2>🕯️ Despertar un alma nueva</h2>
+    <input id="nombreRegistro" placeholder="Nombre del alma">
+    <input id="emailRegistro" type="email" placeholder="Correo de invocación">
+    <input id="passwordRegistro" type="password" placeholder="Clave de acceso al misterio">
+    <label>
+      <input type="checkbox" id="mayorEdad"> Soy mayor de edad según las leyes de mi país
+    </label><br>
+    <button onclick="registrar()">✨ Ingresar</button>
+    <p id="errorRegistro" style="color: #ff5555;"></p>
+  </div>
 
-      input,
-      textarea,
-      button {
-        width: 90%;
-        max-width: 500px;
-        margin-top: 1rem;
-        padding: 1rem;
-        border-radius: 8px;
-        border: none;
-        font-size: 1rem;
-        font-family: inherit;
-      }
+  <!-- Login -->
+  <div id="formularioLogin" class="bloque oculto">
+    <h2>🔑 Entrar al misterio</h2>
+    <input id="emailLogin" type="email" placeholder="Correo de invocación">
+    <input id="passwordLogin" type="password" placeholder="Clave de acceso al misterio">
+    <button onclick="login()">🔓 Acceder</button>
+    <p id="errorLogin" style="color: #ff5555;"></p>
+  </div>
 
-      input,
-      textarea {
-        background-color: #34344a;
-        color: #f8f8f2;
-      }
+  <!-- Portal usuario -->
+  <div id="portalUsuario" class="bloque oculto">
+    <h2 id="saludoUsuario">✨ Bienvenido, alma luminosa</h2>
+    <button onclick="cerrarSesion()">🚪 Salir del umbral</button>
 
-      button {
-        background-color: #ff79c6;
-        color: #fff;
-        cursor: pointer;
-      }
-
-      button:hover {
-        background-color: #ff92da;
-      }
-
-      .oculto {
-        display: none;
-      }
-
-      .animacion-suave {
-        animation: aparecer 1s ease-out;
-      }
-
-      @keyframes aparecer {
-        from {
-          opacity: 0;
-          transform: scale(0.95);
-        }
-        to {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      #bienvenida h1 {
-        font-size: 2rem;
-      }
-
-      #bienvenida button {
-        margin: 1rem 0.5rem;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="bienvenida" class="bloque">
-      <h1>🌌 Bienvenido al Umbral del Alma</h1>
-      <p>
-        Solo quienes conozcan su nombre secreto podrán acceder a los misterios
-        ocultos.
-      </p>
-      <button onclick="mostrarRegistro()">🕯️ Despertar un alma nueva</button>
-      <button onclick="mostrarLogin()">🔑 Entrar al misterio</button
-      ><br /><br />
-      <button onclick="entrarComoVisitante()">👁️ Explorar sin entrar</button>
+    <!-- Acertijo final -->
+    <div id="acertijoFinal" class="bloque oculto">
+      <h3>🔮 Acertijo final exclusivo:</h3>
+      <p id="textoAcertijoFinal"></p>
+      <input id="respuestaFinal" placeholder="Tu respuesta al último misterio...">
+      <button onclick="verificarFinal()">📜 Resolver</button>
+      <div id="mensajeFinal" class="animacion-suave"></div>
     </div>
 
-    <div id="formularioRegistro" class="bloque oculto">
-      <h2>🕯️ Despertar un alma nueva</h2>
-      <input id="nombreRegistro" placeholder="Nombre del alma" />
-      <input
-        id="emailRegistro"
-        type="email"
-        placeholder="Correo de invocación"
-      />
-      <input
-        id="passwordRegistro"
-        type="password"
-        placeholder="Clave de acceso al misterio"
-      />
-      <label>
-        <input type="checkbox" id="mayorEdad" /> Soy mayor de edad según las
-        leyes de mi país </label
-      ><br />
-      <button onclick="registrar()">✨ Ingresar</button>
-      <p id="errorRegistro" style="color: #ff5555"></p>
+    <!-- Zona colaborativa -->
+    <div id="colaborativo" class="bloque">
+      <h3>🤝 Zona de colaboración entre almas</h3>
+      <p id="textoColaborativo">¿Qué susurros puedes aportar para el acertijo grupal?</p>
+      <input id="pistaInput" placeholder="Escribe tu pista, verso o símbolo...">
+      <button onclick="enviarPista()">💬 Compartir pista</button>
+      <div id="muroPistas"></div>
     </div>
+  </div>
 
-    <div id="formularioLogin" class="bloque oculto">
-      <h2>🔑 Entrar al misterio</h2>
-      <input id="emailLogin" type="email" placeholder="Correo de invocación" />
-      <input
-        id="passwordLogin"
-        type="password"
-        placeholder="Clave de acceso al misterio"
-      />
-      <button onclick="login()">🔓 Acceder</button>
-      <p id="errorLogin" style="color: #ff5555"></p>
-    </div>
+  <!-- Zona visitante -->
+  <div id="zonaVisitante" class="bloque oculto">
+    <h2>🌱 Explorador libre</h2>
+    <div id="acertijosEncadenados"></div>
+  </div>
+    <div id="zonaIA" class="bloque">
+    <h2>🔮 Inteligencia del Umbral</h2>
 
-    <div id="portalUsuario" class="bloque oculto">
-      <h2 id="saludoUsuario">✨ Bienvenido, alma luminosa</h2>
-      <button onclick="cerrarSesion()">🚪 Salir del umbral</button>
-      <div id="zonaAcertijos"></div>
-      <div id="acertijoFinal" class="oculto">
-        <h3>🔮 Acertijo final exclusivo:</h3>
-        <p id="textoAcertijoFinal"></p>
-        <input
-          id="respuestaFinal"
-          placeholder="Tu respuesta al último misterio..."
-        />
-        <button onclick="verificarFinal()">📜 Resolver</button>
-        <div id="mensajeFinal" class="animacion-suave"></div>
-      </div>
-      <div id="colaborativo" class="bloque">
-        <h3>🤝 Zona de colaboración entre almas</h3>
-        <p id="textoColaborativo">
-          ¿Qué susurros puedes aportar para el acertijo grupal?
-        </p>
-        <input
-          id="pistaInput"
-          placeholder="Escribe tu pista, verso o símbolo..."
-        />
-        <button onclick="enviarPista()">💬 Compartir pista</button>
-        <div id="muroPistas"></div>
-      </div>
-    </div>
+    <h3>💬 Oráculo Poético</h3>
+    <input id="consultaOraculo" placeholder="Haz una pregunta al Oráculo...">
+    <button onclick="responderOraculo()">✨ Consultar</button>
+    <div id="respuestaOraculo" class="animacion-suave"></div>
 
-    <div id="zonaVisitante" class="bloque oculto">
-      <h2>🌱 Explorador libre</h2>
-      <div id="acertijosEncadenados"></div>
-    </div>
-    <script>
-      // Traducción automática
-      const lang = navigator.language.startsWith("en") ? "en" : "es";
+    <h3>🧩 Generador de acertijos</h3>
+    <input id="palabraClave" placeholder="Escribe una palabra clave...">
+    <button onclick="generarAcertijo()">📜 Crear acertijo</button>
+    <div id="acertijoGenerado" class="animacion-suave"></div>
 
-      const traducciones = {
-        es: {
-          bienvenida: "🌌 Bienvenido al Umbral del Alma",
-          subtitulo:
-            "Solo quienes conozcan su nombre secreto podrán acceder a los misterios ocultos.",
-          botones: [
-            "🕯️ Despertar un alma nueva",
-            "🔑 Entrar al misterio",
-            "👁️ Explorar sin entrar",
-          ],
-        },
-        en: {
-          bienvenida: "🌌 Welcome to the Soul’s Threshold",
-          subtitulo:
-            "Only those who know their secret name may access the hidden mysteries.",
-          botones: [
-            "🕯️ Awaken a New Soul",
-            "🔑 Enter the Threshold",
-            "👁️ Explore Without Entering",
-          ],
-        },
-      };
+    <h3>🌌 Interpretador de pistas</h3>
+    <button onclick="analizarPistas()">🔍 Analizar susurros compartidos</button>
+    <div id="interpretacionPistas" class="animacion-suave"></div>
 
-      window.onload = () => {
-        const t = traducciones[lang];
-        document.querySelector("#bienvenida h1").innerText = t.bienvenida;
-        document.querySelector("#bienvenida p").innerText = t.subtitulo;
-        const btns = document.querySelectorAll("#bienvenida button");
-        btns.forEach((btn, i) => {
-          btn.innerText = t.botones[i];
+    <h3>🔐 Eco emocional de tus palabras</h3>
+    <input id="mensajeEmocional" placeholder="Comparte un susurro del alma...">
+    <button onclick="detectarEmocion()">🕯️ Escuchar la emoción</button>
+    <div id="ecoEmocional" class="animacion-suave"></div>
+  </div>
+<script>
+  // 🌐 Traducción automática
+  const lang = navigator.language.startsWith("en") ? "en" : "es";
+  const traducciones = {
+    es: {
+      bienvenida: "🌌 Bienvenido al Umbral del Alma",
+      subtitulo: "Solo quienes conozcan su nombre secreto podrán acceder a los misterios ocultos.",
+      botones: ["🕯️ Despertar un alma nueva", "🔑 Entrar al misterio", "👁️ Explorar sin entrar"]
+    },
+    en: {
+      bienvenida: "🌌 Welcome to the Soul’s Threshold",
+      subtitulo: "Only those who know their secret name may access the hidden mysteries.",
+      botones: ["🕯️ Awaken a New Soul", "🔑 Enter the Mystery", "👁️ Explore Without Entering"]
+    }
+  };
+
+  window.onload = () => {
+    const t = traducciones[lang];
+    document.querySelector("#bienvenida h1").innerText = t.bienvenida;
+    document.querySelector("#bienvenida p").innerText = t.subtitulo;
+    const btns = document.querySelectorAll("#bienvenida button");
+    btns.forEach((btn, i) => { btn.innerText = t.botones[i]; });
+    cargarAcertijosVisitante();
+  };
+
+  // 🔁 Mostrar formularios
+  function mostrarRegistro() {
+    ocultarTodo();
+    document.getElementById("formularioRegistro").classList.remove("oculto");
+  }
+
+  function mostrarLogin() {
+    ocultarTodo();
+    document.getElementById("formularioLogin").classList.remove("oculto");
+  }
+
+  function entrarComoVisitante() {
+    ocultarTodo();
+    document.getElementById("zonaVisitante").classList.remove("oculto");
+  }
+
+  function ocultarTodo() {
+    ["formularioRegistro", "formularioLogin", "portalUsuario", "zonaVisitante"].forEach(id =>
+      document.getElementById(id).classList.add("oculto"));
+  }
+
+  // 🔐 Registro
+  function registrar() {
+    const nombre = document.getElementById("nombreRegistro").value.trim();
+    const email = document.getElementById("emailRegistro").value.trim();
+    const pass = document.getElementById("passwordRegistro").value;
+    const mayorEdad = document.getElementById("mayorEdad").checked;
+
+    if (!mayorEdad) {
+      document.getElementById("errorRegistro").innerText = "⚠️ Debes confirmar que eres mayor de edad.";
+      return;
+    }
+
+    firebase.auth().createUserWithEmailAndPassword(email, pass)
+      .then(cred => {
+        const uid = cred.user.uid;
+        return firebase.database().ref("usuarios/" + uid).set({
+          nombre: nombre || "Alma sin nombre",
+          email: email,
+          mayorDeEdad: true,
+          fechaRegistro: new Date().toISOString(),
+          acertijosResueltos: [],
+          pistasEnviadas: []
         });
-        cargarAcertijosVisitante();
-      };
+      })
+      .then(() => login())
+      .catch(err => {
+        document.getElementById("errorRegistro").innerText = err.message;
+      });
+  }
 
-      // Mostrar formularios
-      function mostrarRegistro() {
-        ocultarTodo();
-        document
-          .getElementById("formularioRegistro")
-          .classList.remove("oculto");
-      }
+  // 🔑 Login
+  function login() {
+    const email = document.getElementById("emailLogin").value.trim();
+    const pass = document.getElementById("passwordLogin").value;
 
-      function mostrarLogin() {
-        ocultarTodo();
-        document.getElementById("formularioLogin").classList.remove("oculto");
-      }
+    firebase.auth().signInWithEmailAndPassword(email, pass)
+      .then(cred => iniciarSesion(cred.user))
+      .catch(err => {
+        document.getElementById("errorLogin").innerText = err.message;
+      });
+  }
 
-      function entrarComoVisitante() {
-        ocultarTodo();
-        document.getElementById("zonaVisitante").classList.remove("oculto");
-      }
+  function iniciarSesion(user) {
+    ocultarTodo();
+    document.getElementById("portalUsuario").classList.remove("oculto");
 
-      function ocultarTodo() {
-        [
-          "formularioRegistro",
-          "formularioLogin",
-          "portalUsuario",
-          "zonaVisitante",
-        ].forEach((id) => {
-          document.getElementById(id).classList.add("oculto");
-        });
-      }
+    firebase.database().ref("usuarios/" + user.uid).once("value")
+      .then(snapshot => {
+        const datos = snapshot.val();
+        document.getElementById("saludoUsuario").innerText = `✨ Bienvenido, ${datos.nombre}`;
+        mostrarAcertijoFinal();
+        mostrarMuro();
+      });
+  }
 
-      // Registro con Firebase
-      function registrar() {
-        const nombre = document.getElementById("nombreRegistro").value.trim();
-        const email = document.getElementById("emailRegistro").value.trim();
-        const pass = document.getElementById("passwordRegistro").value;
-        const mayorEdad = document.getElementById("mayorEdad").checked;
+  function cerrarSesion() {
+    firebase.auth().signOut().then(() => {
+      ocultarTodo();
+      document.getElementById("bienvenida").classList.remove("oculto");
+    });
+  }
 
-        if (!mayorEdad) {
-          document.getElementById("errorRegistro").innerText =
-            "⚠️ Debes confirmar que eres mayor de edad.";
-          return;
-        }
+  // 🧩 Acertijos para visitantes
+  function cargarAcertijosVisitante() {
+    const div = document.getElementById("acertijosEncadenados");
+    div.innerHTML = "";
+    const acertijos = [
+      "Si me nombras, desaparezco. ¿Qué soy?",
+      "Camino sin piernas, pero cruzo el mundo. ¿Quién soy?",
+      "Estoy en ti, pero no puedes verme. Solo sentirme. ¿Qué soy?"
+    ];
 
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, pass)
-          .then((cred) => {
-            const uid = cred.user.uid;
-            return firebase
-              .database()
-              .ref("usuarios/" + uid)
-              .set({
-                nombre: nombre || "Alma sin nombre",
-                email: email,
-                mayorDeEdad: true,
-                fechaRegistro: new Date().toISOString(),
-                acertijosResueltos: [],
-                pistasEnviadas: [],
-              });
-          })
-          .then(() => {
-            login(); // Inicia sesión automáticamente
-          })
-          .catch((err) => {
-            document.getElementById("errorRegistro").innerText = err.message;
-          });
-      }
-
-      // Login
-      function login() {
-        const email = document.getElementById("emailLogin").value.trim();
-        const pass = document.getElementById("passwordLogin").value;
-
-        firebase
-          .auth()
-          .signInWithEmailAndPassword(email, pass)
-          .then((cred) => {
-            iniciarSesion(cred.user);
-          })
-          .catch((err) => {
-            document.getElementById("errorLogin").innerText = err.message;
-          });
-      }
-
-      // Iniciar sesión completa
-      function iniciarSesion(user) {
-        ocultarTodo();
-        document.getElementById("portalUsuario").classList.remove("oculto");
-
-        firebase
-          .database()
-          .ref("usuarios/" + user.uid)
-          .once("value")
-          .then((snapshot) => {
-            const datos = snapshot.val();
-            document.getElementById(
-              "saludoUsuario"
-            ).innerText = `✨ Bienvenido, ${datos.nombre}`;
-            mostrarAcertijoFinal();
-            mostrarMuro();
-          });
-      }
-
-      // Cerrar sesión
-      function cerrarSesion() {
-        firebase
-          .auth()
-          .signOut()
-          .then(() => {
-            ocultarTodo();
-            document.getElementById("bienvenida").classList.remove("oculto");
-          });
-      }
-
-      // Cargar acertijos para visitante
-      function cargarAcertijosVisitante() {
-        const div = document.getElementById("acertijosEncadenados");
-        div.innerHTML = "";
-
-        const acertijos = [
-          "Si me nombras, desaparezco. ¿Qué soy?",
-          "Camino sin piernas, pero cruzo el mundo. ¿Quién soy?",
-          "Estoy en ti, pero no puedes verme. Solo sentirme. ¿Qué soy?",
-        ];
-
-        acertijos.forEach((texto, i) => {
-          const contenedor = document.createElement("div");
-          contenedor.classList.add("bloque");
-          contenedor.innerHTML = `<p>${texto}</p>
+    acertijos.forEach((texto, i) => {
+      const contenedor = document.createElement("div");
+      contenedor.classList.add("bloque");
+      contenedor.innerHTML = `<p>${texto}</p>
         <input placeholder="Tu respuesta...">
         <button onclick="mostrarMensajeEmocional(this)">📜 Resolver</button>
         <div class="animacion-suave"></div>`;
-          div.appendChild(contenedor);
-        });
-      }
+      div.appendChild(contenedor);
+    });
+  }
 
-      // Mensaje poético al acertar
-      function mostrarMensajeEmocional(btn) {
-        const mensajes = [
-          "🌠 Has tocado la verdad con tus dedos del alma.",
-          "🌌 El misterio se ha rendido ante tu luz.",
-          "🕯️ La oscuridad reconoce tu sabiduría silenciosa.",
-        ];
-        const contenedor = btn.parentElement.querySelector(".animacion-suave");
-        contenedor.innerText =
-          mensajes[Math.floor(Math.random() * mensajes.length)];
-      }
+  function mostrarMensajeEmocional(btn) {
+    const mensajes = [
+      "🌠 Has tocado la verdad con tus dedos del alma.",
+      "🌌 El misterio se ha rendido ante tu luz.",
+      "🕯️ La oscuridad reconoce tu sabiduría silenciosa."
+    ];
+    const contenedor = btn.parentElement.querySelector(".animacion-suave");
+    contenedor.innerText = mensajes[Math.floor(Math.random() * mensajes.length)];
+  }
 
-      // Acertijo final exclusivo
-      function mostrarAcertijoFinal() {
-        document.getElementById("acertijoFinal").classList.remove("oculto");
-        document.getElementById("textoAcertijoFinal").innerText =
-          "No soy tiempo, pero cambio todo. No soy voz, pero guío a muchos. ¿Qué soy?";
-      }
+  // 🔮 Acertijo final exclusivo
+  function mostrarAcertijoFinal() {
+    document.getElementById("acertijoFinal").classList.remove("oculto");
+    document.getElementById("textoAcertijoFinal").innerText =
+      "No soy tiempo, pero cambio todo. No soy voz, pero guío a muchos. ¿Qué soy?";
+  }
 
-      function verificarFinal() {
-        const r = document
-          .getElementById("respuestaFinal")
-          .value.trim()
-          .toLowerCase();
-        const valido = ["idea", "intuición", "inspiración"].includes(r);
+  function verificarFinal() {
+    const r = document.getElementById("respuestaFinal").value.trim().toLowerCase();
+    const valido = ["idea", "inspiración", "intuición"].includes(r);
+    const msg = document.getElementById("mensajeFinal");
+    msg.innerText = valido
+      ? "🧠 Has resuelto el misterio final. El umbral se abre para ti."
+      : "❌ Aún no es la respuesta correcta. Escucha más allá...";
+  }
 
-        const msg = document.getElementById("mensajeFinal");
-        msg.innerText = valido
-          ? "🧠 Has resuelto el misterio final. El umbral se abre para ti."
-          : "❌ Aún no es la respuesta correcta. Escucha más allá...";
-      }
+  // 🤝 Colaboración
+  function enviarPista() {
+    const pista = document.getElementById("pistaInput").value.trim();
+    const user = firebase.auth().currentUser;
+    if (!pista || !user) return;
 
-      // Zona colaborativa
-      function enviarPista() {
-        const pista = document.getElementById("pistaInput").value.trim();
-        const user = firebase.auth().currentUser;
-        if (!pista || !user) return;
+    const uid = user.uid;
+    const nuevaPista = {
+      texto: pista,
+      autor: uid,
+      fecha: new Date().toISOString()
+    };
+    firebase.database().ref("pistasCompartidas").push(nuevaPista);
+    document.getElementById("pistaInput").value = "";
+  }
 
-        const uid = user.uid;
-        const nuevaPista = {
-          texto: pista,
-          autor: uid,
-          fecha: new Date().toISOString(),
-        };
-        firebase.database().ref("pistasCompartidas").push(nuevaPista);
-        document.getElementById("pistaInput").value = "";
-      }
+  function mostrarMuro() {
+    const muro = document.getElementById("muroPistas");
+    muro.innerHTML = "";
+    firebase.database().ref("pistasCompartidas").on("child_added", snapshot => {
+      const dato = snapshot.val();
+      const div = document.createElement("div");
+      div.classList.add("bloque");
+      div.innerText = `"${dato.texto}" — Susurro compartido`;
+      muro.appendChild(div);
+    });
+  }
 
-      function mostrarMuro() {
-        const muro = document.getElementById("muroPistas");
-        muro.innerHTML = "";
+  // 🧠 IA simbólica
+  function responderOraculo() {
+    const pregunta = document.getElementById("consultaOraculo").value.toLowerCase();
+    const respuestas = [
+      "🕯️ Las respuestas no siempre tienen forma... pero tú ya las presientes.",
+      "🌌 El misterio sonríe. Avanza sin miedo.",
+      "💫 Tu alma ya sabía esto. El Oráculo solo lo confirma."
+    ];
+    const respuesta = respuestas[Math.floor(Math.random() * respuestas.length)];
+    document.getElementById("respuestaOraculo").innerText = respuesta;
+  }
 
-        firebase
-          .database()
-          .ref("pistasCompartidas")
-          .on("child_added", (snapshot) => {
-            const dato = snapshot.val();
-            const div = document.createElement("div");
-            div.classList.add("bloque");
-            div.innerText = `"${dato.texto}" — Susurro compartido`;
-            muro.appendChild(div);
-          });
-      }
+  function generarAcertijo() {
+    const palabra = document.getElementById("palabraClave").value.toLowerCase();
+    const acertijo = `No soy ${palabra}, pero sin mí no existiría. ¿Qué soy?`;
+    document.getElementById("acertijoGenerado").innerText = acertijo;
+  }
 
-      // Verificar sesión activa al cargar
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          iniciarSesion(user);
-        }
-      });
-    </script>
-  </body>
-</html>
+  function analizarPistas() {
+    firebase.database().ref("pistasCompartidas").once("value").then(snapshot => {
+      const pistas = [];
+      snapshot.forEach(child => pistas.push(child.val().texto));
+      const resumen = pistas.length > 0
+        ? `🔍 Las pistas parecen girar en torno a: "${pistas.slice(-3).join(', ')}". ¿Podría ser una señal?`
+        : "🕸️ Aún no hay suficientes pistas para interpretar.";
+      document.getElementById("interpretacionPistas").innerText = resumen;
+    });
+  }
+
+  function detectarEmocion() {
+    const texto = document.getElementById("mensajeEmocional").value.to
